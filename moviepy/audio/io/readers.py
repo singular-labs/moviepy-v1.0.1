@@ -109,8 +109,11 @@ class FFMPEG_AudioReader:
     def read_chunk(self,chunksize):
         # chunksize is not being autoconverted from float to int
         chunksize = int(round(chunksize))
-        L = self.nchannels*chunksize*self.nbytes
-        s = self.proc.stdout.read(L)
+        out, err = self.proc.communicate(timeout=15)
+        if err == b'':
+            s = out
+        else:
+            raise ValueError("Error occurred: {}".format(err[:200]))
         dt = {1: 'int8',2:'int16',4:'int32'}[self.nbytes]
         if hasattr(np, 'frombuffer'):
             result = np.frombuffer(s, dtype=dt)
