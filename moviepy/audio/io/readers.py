@@ -109,8 +109,8 @@ class FFMPEG_AudioReader:
     def read_chunk(self,chunksize):
         # chunksize is not being autoconverted from float to int
         chunksize = int(round(chunksize))
-        out, err = self.proc.communicate(timeout=15)
-        if err == b'':
+        out, err = self.proc.communicate()
+        if not err:
             s = out
         else:
             raise ValueError("Error occurred: {}".format(err[:200]))
